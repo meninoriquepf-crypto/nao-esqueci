@@ -54,6 +54,7 @@ import androidx.core.content.ContextCompat
 import com.naoesqueci.app.R
 import com.naoesqueci.app.domain.model.Trip
 import com.naoesqueci.app.domain.util.DateTimeUtils
+import com.naoesqueci.app.widget.WidgetRefreshHelper
 import com.naoesqueci.app.presentation.ui.component.EmptyState
 import com.naoesqueci.app.presentation.ui.component.SvgIcon
 
@@ -144,7 +145,12 @@ fun TripListScreen(
                     title = { Text(stringResource(R.string.trip_delete_confirm)) },
                     text = { Text(stringResource(R.string.trip_delete_message)) },
                     confirmButton = {
-                        Button(onClick = { viewModel.executeDeleteTrip() }) {
+                        Button(
+                            onClick = {
+                                viewModel.executeDeleteTrip()
+                                WidgetRefreshHelper.requestUpdate(context)
+                            }
+                        ) {
                             Text(stringResource(R.string.delete))
                         }
                     },

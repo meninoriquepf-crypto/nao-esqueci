@@ -36,11 +36,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.naoesqueci.app.R
 import com.naoesqueci.app.domain.model.ItemCategory
 import com.naoesqueci.app.domain.model.TripType
+import com.naoesqueci.app.widget.WidgetRefreshHelper
 import com.naoesqueci.app.presentation.ui.component.ChecklistSection
 import com.naoesqueci.app.presentation.ui.component.SvgIcon
 import com.naoesqueci.app.presentation.ui.component.TripHeader
@@ -60,6 +62,7 @@ fun TripDetailScreen(
     val returnItems by viewModel.returnItems.collectAsState(initial = emptyList())
     val uiState by viewModel.uiState.collectAsState()
     var showMenu by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     trip?.let { currentTrip ->
         Scaffold(
@@ -124,6 +127,7 @@ fun TripDetailScreen(
                     items = currentItems,
                     onItemClick = { item, isChecked ->
                         viewModel.toggleCheck(item.id!!, uiState.selectedType, isChecked)
+                        WidgetRefreshHelper.requestUpdate(context)
                     },
                     onItemLongClick = { itemId -> onEditItem(itemId) }
                 )
@@ -137,7 +141,14 @@ fun TripDetailScreen(
             title = { Text(stringResource(R.string.trip_delete_confirm)) },
             text = { Text(stringResource(R.string.trip_delete_message)) },
             confirmButton = {
-                Button(onClick = { viewModel.executeDeleteTrip(onSuccess = onTripDeleted) }) {
+                Button(onClick = {
+                    viewModel.executeDeleteTrip(
+                        onSuccess = {
+                            WidgetRefreshHelper.requestUpdate(context)
+                            onTripDeleted()
+                        }
+                    )
+                }) {
                     Text(stringResource(R.string.delete))
                 }
             },

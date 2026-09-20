@@ -38,10 +38,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.naoesqueci.app.R
 import com.naoesqueci.app.domain.util.DateTimeUtils
+import com.naoesqueci.app.widget.WidgetRefreshHelper
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,6 +58,7 @@ fun TripCreateScreen(
     var showDepartureTimePicker by remember { mutableStateOf(false) }
     var showReturnDatePicker by remember { mutableStateOf(false) }
     var showReturnTimePicker by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -75,7 +78,12 @@ fun TripCreateScreen(
                 },
                 actions = {
                     Button(
-                        onClick = { viewModel.saveTrip(onSave) },
+                        onClick = {
+                            viewModel.saveTrip {
+                                WidgetRefreshHelper.requestUpdate(context)
+                                onSave()
+                            }
+                        },
                         enabled = !uiState.isLoading,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,

@@ -30,12 +30,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.naoesqueci.app.R
 import com.naoesqueci.app.domain.model.ItemCategory
 import com.naoesqueci.app.presentation.ui.component.ParticipationChip
 import com.naoesqueci.app.presentation.ui.component.TypeOption
+import com.naoesqueci.app.widget.WidgetRefreshHelper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,6 +47,7 @@ fun ItemEditScreen(
     onCancel: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -64,7 +67,14 @@ fun ItemEditScreen(
                 },
                 actions = {
                     if (viewModel.itemId != null) {
-                        IconButton(onClick = { viewModel.deleteItem(onSave) }) {
+                        IconButton(
+                            onClick = {
+                                viewModel.deleteItem {
+                                    WidgetRefreshHelper.requestUpdate(context)
+                                    onSave()
+                                }
+                            }
+                        ) {
                             Icon(Icons.Default.Delete, contentDescription = "Excluir")
                         }
                     }
@@ -157,7 +167,12 @@ fun ItemEditScreen(
             Spacer(Modifier.height(32.dp))
 
             Button(
-                onClick = { viewModel.saveItem(onSuccess = onSave) },
+                onClick = {
+                    viewModel.saveItem {
+                        WidgetRefreshHelper.requestUpdate(context)
+                        onSave()
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = uiState.name.isNotBlank() && !uiState.isLoading,
                 colors = ButtonDefaults.buttonColors(

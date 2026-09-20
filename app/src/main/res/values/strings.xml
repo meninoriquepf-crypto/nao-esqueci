@@ -1,0 +1,106 @@
+<resources>
+    <string name="app_name">Não Esqueci</string>
+    
+    <!-- Onboarding -->
+    <string name="onboarding_title">Prepare sua viagem</string>
+    <string name="onboarding_subtitle">Não esqueça nada na ida.\nNão deixe nada para trás na volta.</string>
+    <string name="onboarding_button">Começar</string>
+    
+    <!-- Trip List -->
+    <string name="trip_list_title">Minhas Viagens</string>
+    <string name="trip_list_empty_title">Nenhuma viagem ainda</string>
+    <string name="trip_list_empty_subtitle">Toque no + para criar sua primeira viagem</string>
+    <string name="trip_delete_confirm">Excluir esta viagem?</string>
+    <string name="trip_delete_message">Todos os itens e alarmes serão removidos permanentemente.</string>
+    <string name="delete">Excluir</string>
+    <string name="cancel">Cancelar</string>
+    
+    <!-- Trip Create/Edit -->
+    <string name="trip_create_title_nova">Nova Viagem</string>
+    <string name="trip_create_title_editar">Editar Viagem</string>
+    <string name="trip_name_hint">Nome da viagem (ex: Fim de semana em Sobral)</string>
+    <string name="trip_departure_label">Ida</string>
+    <string name="trip_return_label">Volta</string>
+    <string name="trip_date_hint">Data</string>
+    <string name="trip_time_hint">Horário</string>
+    <string name="trip_save">Salvar</string>
+    <string name="trip_error_name_empty">Digite um nome para a viagem</string>
+    <string name="trip_error_dates_invalid">A volta deve ser depois da ida</string>
+    <string name="trip_error_departure_past">A ida não pode ser no passado</string>
+    
+    <!-- Trip Detail -->
+    <string name="trip_detail_items_title">Meus Itens</string>
+    <string name="trip_detail_gifts_title">Presentes</string>
+    <string name="trip_detail_empty_items">Nenhum item\nToque no + para adicionar</string>
+    <string name="trip_detail_empty_gifts">Nenhum presente</string>
+    <string name="trip_detail_progress">%1$d de %2$d conferidos</string>
+    <string name="trip_detail_all_checked">Tudo conferido!</string>
+    
+    <!-- Item Edit -->
+    <string name="item_edit_title_novo">Novo Item</string>
+    <string name="item_edit_title_editar">Editar Item</string>
+    <string name="item_name_hint">Nome do item (ex: Camisa, Carregador)</string>
+    <string name="item_type_normal">Item normal</string>
+    <string name="item_type_normal_desc">Gera alerta se esquecido</string>
+    <string name="item_type_gift">Presente</string>
+    <string name="item_type_gift_desc">Não gera alerta de esquecimento</string>
+    <string name="item_participation_title">Participa em</string>
+    <string name="item_participation_departure">Ida</string>
+    <string name="item_participation_return">Volta</string>
+    <string name="item_save">Adicionar</string>
+    <string name="item_update">Salvar</string>
+    <string name="item_delete_confirm">Excluir este item?</string>
+    
+    <!-- Settings -->
+    <string name="settings_title">Configurações</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_theme_system">Sistema</string>
+    <string name="settings_theme_light">Claro</string>
+    <string name="settings_theme_dark">Escuro</string>
+    <string name="settings_notifications">Notificações</string>
+    <string name="settings_notifications_enabled">Ativar lembretes automáticos</string>
+    <string name="settings_notifications_enabled_summary">Receber alertas antes e no horário da viagem</string>
+    <string name="settings_advance_time">Lembrar antes da viagem</string>
+    <string name="settings_advance_time_summary">Tempo de antecedência para o primeiro aviso</string>
+    <string name="settings_advance_15min">15 minutos</string>
+    <string name="settings_advance_30min">30 minutos</string>
+    <string name="settings_advance_1h">1 hora</string>
+    <string name="settings_advance_2h">2 horas</string>
+    <string name="settings_advance_disabled">Desativado</string>
+    <string name="settings_about">Sobre</string>
+    <string name="settings_version">Versão 1.0.0</string>
+    <string name="settings_privacy">Funciona 100% offline. Seus dados ficam no seu aparelho.</string>
+    
+    <!-- Notifications -->
+    <string name="notification_channel_departure">Alertas de Ida</string>
+    <string name="notification_channel_departure_desc">Notificações de verificação antes da viagem de ida</string>
+    <string name="notification_channel_return">Alertas de Volta</string>
+    <string name="notification_channel_return_desc">Notificações de verificação antes da viagem de volta</string>
+    <string name="notification_channel_positive">Confirmações</string>
+    <string name="notification_channel_positive_desc">Confirmação de que todos os itens estão conferidos</string>
+    
+    <string name="notification_advance_departure_title">Viagem se aproximando</string>
+    <string name="notification_advance_departure_body">Faltam %1$d min para a ida. Confira seus itens!</string>
+    <string name="notification_advance_return_title">Volta se aproximando</string>
+    <string name="notification_advance_return_body">Faltam %1$d min para a volta. Confira seus itens!</string>
+    
+    <string name="notification_pending_departure_title">Itens pendentes na ida</string>
+    <string name="notification_pending_departure_body">Ainda não conferidos: %1$s</string>
+    <string name="notification_pending_return_title">Itens pendentes na volta</string>
+    <string name="notification_pending_return_body">Pode estar deixando para trás: %1$s</string>
+    
+    <string name="notification_positive_departure_title">Tudo certo para a ida!</string>
+    <string name="notification_positive_departure_body">Todos os itens obrigatórios foram conferidos.</string>
+    <string name="notification_positive_return_title">Tudo certo para a volta!</string>
+    <string name="notification_positive_return_body">Todos os itens obrigatórios foram conferidos.</string>
+    
+    <!-- Permission rationale -->
+    <string name="permission_notification_title">Permissão para notificações</string>
+    <string name="permission_notification_message">Para lembrar você dos itens antes da viagem, precisamos enviar notificações.</string>
+    <string name="permission_notification_allow">Permitir</string>
+    <string name="permission_notification_deny">Agora não</string>
+    
+    <!-- General -->
+    <string name="error_generic">Ocorreu um erro. Tente novamente.</string>
+    <string name="loading">Carregando…</string>
+</resources>

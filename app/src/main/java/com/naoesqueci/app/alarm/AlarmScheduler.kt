@@ -16,6 +16,10 @@ class AlarmScheduler(
 ) {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
+    companion object {
+        const val IMMEDIATE_ALERT_DELAY_MS = 30_000L
+    }
+
     suspend fun scheduleTripAlarms(trip: Trip) {
         val notificationsEnabled = settingsRepository.notificationsEnabled.first()
         if (!notificationsEnabled) return
@@ -34,15 +38,25 @@ class AlarmScheduler(
         }
 
         if (dateTime <= System.currentTimeMillis()) return
+        val now = System.currentTimeMillis()
 
         if (advanceMinutes > 0) {
             val advanceTime = dateTime - (advanceMinutes * 60 * 1000)
-            if (advanceTime > System.currentTimeMillis()) {
+            if (advanceTime > now) {
                 scheduleAlarm(
                     tripId = trip.id ?: return,
                     tripType = type,
                     eventType = "ADVANCE_WARNING",
                     triggerTime = advanceTime
+                )
+            } else if (now + IMMEDIATE_ALERT_DELAY_MS < dateTime) {
+                // Viagem criada em cima da hora: o aviso antecipado já passou,
+                // então dispara um alerta imediato em vez de silêncio total.
+                scheduleAlarm(
+                    tripId = trip.id ?: return,
+                    tripType = type,
+                    eventType = "ADVANCE_WARNING",
+                    triggerTime = now + IMMEDIATE_ALERT_DELAY_MS
                 )
             }
         }
@@ -53,9 +67,11 @@ class AlarmScheduler(
             } else {
                 dateTime - (repeatMinutes * 60 * 1000)
             }
-            val firstRepeat = base + (repeatMinutes * 60 * 1000)
-            val now = System.currentTimeMillis()
-            if (firstRepeat > now && firstRepeat < dateTime) {
+            var firstRepeat = base + (repeatMinutes * 60 * 1000)
+            if (firstRepeat <= now) {
+                firstRepeat = now + IMMEDIATE_ALERT_DELAY_MS
+            }
+            if (firstRepeat < dateTime) {
                 scheduleAlarm(
                     tripId = trip.id ?: return,
                     tripType = type,

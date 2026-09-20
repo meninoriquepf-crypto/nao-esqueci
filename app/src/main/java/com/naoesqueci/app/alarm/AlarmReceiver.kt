@@ -24,6 +24,10 @@ import kotlinx.coroutines.launch
 
 class AlarmReceiver : BroadcastReceiver() {
 
+    companion object {
+        private const val TAG = "NaoEsqueciAlarm"
+    }
+
     override fun onReceive(context: Context, intent: Intent) {
         val tripId = intent.getLongExtra(AlarmConstants.EXTRA_TRIP_ID, -1)
         val tripTypeStr = intent.getStringExtra(AlarmConstants.EXTRA_TRIP_TYPE) ?: return
@@ -60,13 +64,23 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     private suspend fun handleAlarm(context: Context, tripId: Long, tripTypeStr: String, eventType: String) {
-        if (!hasNotificationPermission(context)) return
+        if (!hasNotificationPermission(context)) {
+            android.util.Log.w(TAG, "alarme ignorado: sem permissao POST_NOTIFICATIONS (trip=$tripId)")
+            return
+        }
 
         val db = AppDatabase.getDatabase(context)
         val settingsRepository = SettingsRepositoryImpl(SettingsDataStore(context))
-        if (!settingsRepository.notificationsEnabled.first()) return
+        if (!settingsRepository.notificationsEnabled.first()) {
+            android.util.Log.i(TAG, "alarme ignorado: notificacoes desativadas (trip=$tripId)")
+            return
+        }
 
-        val entity = db.tripDao().getById(tripId).first() ?: return
+        val entity = db.tripDao().getById(tripId).first()
+        if (entity == null) {
+            android.util.Log.i(TAG, "alarme ignorado: viagem inexistente (trip=$tripId)")
+            return
+        }
         val trip = Trip(
             id = entity.id,
             name = entity.name,
@@ -91,6 +105,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val scheduler = AlarmScheduler(context, settingsRepository)
 
         if (pending.isNotEmpty()) {
+            android.util.Log.i(TAG, "alertando $eventType: ${pending.size} pendentes (trip=$tripId, type=$tripType)")
             if (eventType == "AT_TIME") {
                 dispatcher.sendFinalAlert(trip, tripType, pending.map { it.name })
             } else {

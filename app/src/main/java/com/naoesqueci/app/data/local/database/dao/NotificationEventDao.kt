@@ -14,9 +14,6 @@ interface NotificationEventDao {
     @Query("SELECT COUNT(*) FROM notification_events WHERE tripId = :tripId AND tripType = :tripType AND eventType = :eventType")
     suspend fun countSent(tripId: Long, tripType: String, eventType: String): Int
 
-    @Query("SELECT COUNT(*) FROM notification_events WHERE tripId = :tripId AND tripType = :tripType AND eventType = :eventType")
-    fun hasBeenSent(tripId: Long, tripType: String, eventType: String): Boolean
-
     @Query("DELETE FROM notification_events WHERE tripId = :tripId")
     suspend fun deleteByTripId(tripId: Long)
 

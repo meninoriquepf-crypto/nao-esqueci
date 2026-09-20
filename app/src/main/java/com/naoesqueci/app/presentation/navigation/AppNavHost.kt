@@ -119,7 +119,7 @@ fun AppNavHost(
 
     NavHost(navController, startDestination = AppRoute.Onboarding.route) {
         composable(AppRoute.Onboarding.route) {
-            val viewModel = remember { OnboardingViewModel(context) }
+            val viewModel = remember { OnboardingViewModel(context.applicationContext) }
             OnboardingScreen(
                 viewModel = viewModel,
                 onFinish = {

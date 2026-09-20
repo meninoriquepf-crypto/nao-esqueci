@@ -24,15 +24,11 @@
     <string name="trip_date_hint">Data</string>
     <string name="trip_time_hint">Horário</string>
     <string name="trip_save">Salvar</string>
-    <string name="trip_error_name_empty">Digite um nome para a viagem</string>
-    <string name="trip_error_dates_invalid">A volta deve ser depois da ida</string>
-    <string name="trip_error_departure_past">A ida não pode ser no passado</string>
     
     <!-- Trip Detail -->
     <string name="trip_detail_items_title">Meus Itens</string>
     <string name="trip_detail_gifts_title">Presentes</string>
     <string name="trip_detail_empty_items">Nenhum item\nToque no + para adicionar</string>
-    <string name="trip_detail_empty_gifts">Nenhum presente</string>
     <string name="trip_detail_progress">%1$d de %2$d conferidos</string>
     <string name="trip_detail_all_checked">Tudo conferido!</string>
     
@@ -49,7 +45,6 @@
     <string name="item_participation_return">Volta</string>
     <string name="item_save">Adicionar</string>
     <string name="item_update">Salvar</string>
-    <string name="item_delete_confirm">Excluir este item?</string>
     
     <!-- Settings -->
     <string name="settings_title">Configurações</string>
@@ -122,10 +117,6 @@
     <string name="permission_notification_allow">Permitir</string>
     <string name="permission_notification_deny">Agora não</string>
     
-    <!-- General -->
-    <string name="error_generic">Ocorreu um erro. Tente novamente.</string>
-    <string name="loading">Carregando…</string>
-
     <!-- Widget -->
     <string name="widget_description">Viagem atual e progresso da lista</string>
     <string name="widget_empty_title">Nenhuma viagem</string>

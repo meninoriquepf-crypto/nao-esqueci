@@ -75,5 +75,4 @@
     <!-- Custom colors for pending items highlight -->
     <color name="pending_highlight_light">#FFF3E0</color>
     <color name="pending_highlight_dark">#3E2723</color>
-    <color name="ic_launcher_background">#1B5E20</color>
 </resources>

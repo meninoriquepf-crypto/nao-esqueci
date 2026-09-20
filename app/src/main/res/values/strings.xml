@@ -73,6 +73,13 @@
     <string name="settings_repeat_5min">5 min</string>
     <string name="settings_repeat_10min">10 min</string>
     <string name="settings_repeat_15min">15 min</string>
+    <string name="settings_backup">Backup</string>
+    <string name="settings_backup_summary">Exportar viagens ou restaurar de um arquivo JSON</string>
+    <string name="settings_export">Exportar</string>
+    <string name="settings_import">Importar</string>
+    <string name="backup_exported">Backup exportado: %1$d viagens</string>
+    <string name="backup_imported">Backup restaurado: %1$d viagens, %2$d itens</string>
+    <string name="backup_error">Arquivo de backup inválido</string>
     <string name="settings_about">Sobre</string>
     <string name="settings_version">Versão 1.0.0</string>
     <string name="settings_privacy">Funciona 100% offline. Seus dados ficam no seu aparelho.</string>

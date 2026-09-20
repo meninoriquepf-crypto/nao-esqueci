@@ -80,6 +80,11 @@
     <string name="backup_exported">Backup exportado: %1$d viagens</string>
     <string name="backup_imported">Backup restaurado: %1$d viagens, %2$d itens</string>
     <string name="backup_error">Arquivo de backup inválido</string>
+    <string name="test_alerts_title">Testar alertas</string>
+    <string name="test_alerts_summary">Dispara na hora usando a primeira viagem ativa. Se tudo estiver conferido, o aviso fica em silêncio de propósito.</string>
+    <string name="test_warning">Testar aviso</string>
+    <string name="test_final">Testar alerta final</string>
+    <string name="test_no_trip">Crie uma viagem primeiro</string>
     <string name="settings_about">Sobre</string>
     <string name="settings_version">Versão 1.0.0</string>
     <string name="settings_privacy">Funciona 100% offline. Seus dados ficam no seu aparelho.</string>

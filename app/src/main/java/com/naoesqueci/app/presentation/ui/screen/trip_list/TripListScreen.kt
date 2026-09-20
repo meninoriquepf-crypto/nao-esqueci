@@ -71,26 +71,37 @@ fun TripListScreen(
 
     val context = LocalContext.current
     var showNotificationRationale by remember { mutableStateOf(false) }
+    val prefs = remember { context.getSharedPreferences("app_prefs", android.content.Context.MODE_PRIVATE) }
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { }
+    ) {
+        prefs.edit().putBoolean("notif_perm_requested", true).apply()
+    }
+
+    fun hasNotificationPermission(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    }
 
     LaunchedEffect(Unit) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+        if (!hasNotificationPermission()) {
             val activity = context as? Activity
+            val requested = prefs.getBoolean("notif_perm_requested", false)
             if (activity != null && ActivityCompat.shouldShowRequestPermissionRationale(
                     activity,
                     Manifest.permission.POST_NOTIFICATIONS
                 )
             ) {
                 showNotificationRationale = true
-            } else {
+            } else if (!requested) {
+                prefs.edit().putBoolean("notif_perm_requested", true).apply()
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                // Negada permanentemente: só os ajustes do sistema resolvem.
+                showNotificationRationale = true
             }
         }
     }
@@ -173,7 +184,22 @@ fun TripListScreen(
                 Button(
                     onClick = {
                         showNotificationRationale = false
-                        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        val activity = context as? Activity
+                        if (activity != null && ActivityCompat.shouldShowRequestPermissionRationale(
+                                activity,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            )
+                        ) {
+                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        } else {
+                            // Bloqueio permanente: abre os ajustes do app com 1 toque.
+                            context.startActivity(
+                                android.content.Intent(
+                                    android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                    android.net.Uri.fromParts("package", context.packageName, null)
+                                ).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                            )
+                        }
                     }
                 ) {
                     Text(stringResource(R.string.permission_notification_allow))

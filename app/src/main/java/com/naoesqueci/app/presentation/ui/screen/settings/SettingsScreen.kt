@@ -87,6 +87,27 @@ fun SettingsScreen(
         }
     }
 
+    val database = remember { com.naoesqueci.app.data.local.database.AppDatabase.getDatabase(context) }
+    val allTrips by database.tripDao().getAll().collectAsState(initial = emptyList())
+    val testTrip = remember(allTrips) {
+        val now = System.currentTimeMillis()
+        allTrips.firstOrNull { it.returnDateTime >= now } ?: allTrips.firstOrNull()
+    }
+
+    fun sendTestBroadcast(eventType: String) {
+        val trip = testTrip ?: return
+        val now = System.currentTimeMillis()
+        val type = if (now < trip.departureDateTime) "DEPARTURE" else "RETURN"
+        context.sendBroadcast(
+            android.content.Intent(context, com.naoesqueci.app.alarm.AlarmReceiver::class.java).apply {
+                action = "com.naoesqueci.app.ALARM_${trip.id}_${type}_$eventType"
+                putExtra("TRIP_ID", trip.id)
+                putExtra("TRIP_TYPE", type)
+                putExtra("EVENT_TYPE", eventType)
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -241,6 +262,43 @@ fun SettingsScreen(
                             label = { Text(label) },
                             modifier = Modifier.weight(1f)
                         )
+                    }
+                }
+            }
+
+            HorizontalDivider()
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.test_alerts_title),
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = if (testTrip == null) stringResource(R.string.test_no_trip)
+                    else stringResource(R.string.test_alerts_summary),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = { sendTestBroadcast("ADVANCE_WARNING") },
+                        enabled = testTrip != null,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(stringResource(R.string.test_warning))
+                    }
+                    OutlinedButton(
+                        onClick = { sendTestBroadcast("AT_TIME") },
+                        enabled = testTrip != null,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(stringResource(R.string.test_final))
                     }
                 }
             }

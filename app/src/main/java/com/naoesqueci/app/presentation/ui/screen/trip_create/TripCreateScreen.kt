@@ -189,7 +189,7 @@ fun TripCreateScreen(
 
     if (showDepartureDatePicker) {
         val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = uiState.departureDate
+            initialSelectedDateMillis = DateTimeUtils.localToPickerMillis(uiState.departureDate)
         )
         DatePickerDialog(
             onDismissRequest = { showDepartureDatePicker = false },
@@ -239,7 +239,7 @@ fun TripCreateScreen(
 
     if (showReturnDatePicker) {
         val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = uiState.returnDate
+            initialSelectedDateMillis = DateTimeUtils.localToPickerMillis(uiState.returnDate)
         )
         DatePickerDialog(
             onDismissRequest = { showReturnDatePicker = false },

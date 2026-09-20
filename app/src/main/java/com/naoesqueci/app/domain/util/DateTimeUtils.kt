@@ -45,5 +45,43 @@ object DateTimeUtils {
         return result.timeInMillis
     }
 
+    /**
+     * Converte millis locais para o formato esperado como inicial do
+     * Material3 DatePicker (meia-noite UTC do mesmo dia civil local).
+     */
+    fun localToPickerMillis(localMillis: Long): Long {
+        val local = Calendar.getInstance().apply { timeInMillis = localMillis }
+        return Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC")).apply {
+            set(Calendar.YEAR, local.get(Calendar.YEAR))
+            set(Calendar.MONTH, local.get(Calendar.MONTH))
+            set(Calendar.DAY_OF_MONTH, local.get(Calendar.DAY_OF_MONTH))
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    }
+
+    /**
+     * Converte millis vindos do Material3 DatePicker (meia-noite em UTC)
+     * para o mesmo dia civil no fuso local, preservando o horário atual.
+     * Sem isso, em fusos negativos (ex. UTC-3) o dia salvo volta um dia.
+     */
+    fun pickerDateToLocal(utcMidnightMillis: Long, timeMillis: Long): Long {
+        val utc = Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC")).apply {
+            timeInMillis = utcMidnightMillis
+        }
+        val time = Calendar.getInstance().apply { timeInMillis = timeMillis }
+        return Calendar.getInstance().apply {
+            set(Calendar.YEAR, utc.get(Calendar.YEAR))
+            set(Calendar.MONTH, utc.get(Calendar.MONTH))
+            set(Calendar.DAY_OF_MONTH, utc.get(Calendar.DAY_OF_MONTH))
+            set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY))
+            set(Calendar.MINUTE, time.get(Calendar.MINUTE))
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    }
+
     fun isValidTrip(departure: Long, returnTime: Long): Boolean = returnTime > departure
 }

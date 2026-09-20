@@ -72,7 +72,7 @@ class TripCreateViewModel(
     }
 
     fun setDepartureDate(dateMillis: Long) {
-        val combined = DateTimeUtils.combineDateTime(dateMillis, _uiState.value.departureTime)
+        val combined = DateTimeUtils.pickerDateToLocal(dateMillis, _uiState.value.departureTime)
         _uiState.update { it.copy(departureDate = combined, departureTime = combined, error = null) }
     }
 
@@ -93,7 +93,7 @@ class TripCreateViewModel(
     }
 
     fun setReturnDate(dateMillis: Long) {
-        val combined = DateTimeUtils.combineDateTime(dateMillis, _uiState.value.returnTime)
+        val combined = DateTimeUtils.pickerDateToLocal(dateMillis, _uiState.value.returnTime)
         _uiState.update { it.copy(returnDate = combined, returnTime = combined, error = null) }
     }
 

@@ -10,7 +10,7 @@ A ideia nasceu da vontade de criar algo que pudesse ser realmente útil no dia a
 
 ## 🇧🇷 Uma ideia feita por um brasileiro
 
-Este projeto foi idealizado e desenvolvido por um **brasileiro de 10 anos**, que decidiu transformar suas próprias ideias em um aplicativo de verdade.
+Este projeto foi idealizado e desenvolvido por um **brasileiro**, que decidiu transformar suas próprias ideias em um aplicativo de verdade.
 
 O Não Esqueci representa uma experiência de aprendizado, criatividade e vontade de construir algo próprio. Cada parte do projeto surgiu da tentativa de transformar uma ideia em algo que outras pessoas também pudessem usar.
 

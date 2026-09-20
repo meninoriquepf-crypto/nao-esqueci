@@ -20,6 +20,8 @@ import com.naoesqueci.app.data.local.repository.TripItemRepositoryImpl
 import com.naoesqueci.app.data.local.repository.TripRepositoryImpl
 import com.naoesqueci.app.domain.usecase.item.AddItemUseCase
 import com.naoesqueci.app.domain.usecase.item.DeleteItemUseCase
+import com.naoesqueci.app.domain.usecase.item.GetItemNameSuggestionsUseCase
+import com.naoesqueci.app.domain.usecase.item.GetItemsUseCase
 import com.naoesqueci.app.domain.usecase.item.GetItemsWithStateUseCase
 import com.naoesqueci.app.domain.usecase.item.ToggleItemCheckUseCase
 import com.naoesqueci.app.domain.usecase.item.UpdateItemUseCase
@@ -90,6 +92,8 @@ fun AppNavHost(
     val addItemUseCase = remember { AddItemUseCase(tripItemRepository) }
     val updateItemUseCase = remember { UpdateItemUseCase(tripItemRepository) }
     val deleteItemUseCase = remember { DeleteItemUseCase(tripItemRepository) }
+    val getItemsUseCase = remember { GetItemsUseCase(tripItemRepository) }
+    val suggestNamesUseCase = remember { GetItemNameSuggestionsUseCase(tripItemRepository) }
     val getItemsWithStateUseCase = remember { GetItemsWithStateUseCase(tripItemRepository, checkStateRepository) }
     val toggleItemCheckUseCase = remember { ToggleItemCheckUseCase(checkStateRepository) }
 
@@ -221,6 +225,8 @@ fun AppNavHost(
                             tripItemRepository.getItemById(id).first()
                         }
                     },
+                    getItemsUseCase = getItemsUseCase,
+                    suggestNamesUseCase = suggestNamesUseCase,
                     tripId = tripId,
                     itemId = if (itemId == -1L) null else itemId
                 )

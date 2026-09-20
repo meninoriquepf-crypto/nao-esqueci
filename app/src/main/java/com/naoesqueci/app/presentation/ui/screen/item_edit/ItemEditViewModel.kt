@@ -6,10 +6,19 @@ import com.naoesqueci.app.domain.model.ItemCategory
 import com.naoesqueci.app.domain.model.TripItem
 import com.naoesqueci.app.domain.usecase.item.AddItemUseCase
 import com.naoesqueci.app.domain.usecase.item.DeleteItemUseCase
+import com.naoesqueci.app.domain.usecase.item.GetItemNameSuggestionsUseCase
+import com.naoesqueci.app.domain.usecase.item.GetItemsUseCase
 import com.naoesqueci.app.domain.usecase.item.UpdateItemUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -18,6 +27,8 @@ class ItemEditViewModel(
     private val updateItemUseCase: UpdateItemUseCase,
     private val deleteItemUseCase: DeleteItemUseCase,
     private val getItemUseCase: suspend (Long) -> TripItem?,
+    private val getItemsUseCase: GetItemsUseCase,
+    private val suggestNamesUseCase: GetItemNameSuggestionsUseCase,
     val tripId: Long,
     val itemId: Long?
 ) : ViewModel() {
@@ -33,6 +44,18 @@ class ItemEditViewModel(
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val suggestions: StateFlow<List<String>> = uiState
+        .map { it.name.trim() }
+        .distinctUntilChanged()
+        .flatMapLatest { query ->
+            if (query.length < 2) flowOf(emptyList())
+            else suggestNamesUseCase(query).map { names ->
+                names.filter { !it.equals(query, ignoreCase = true) }.take(5)
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     init {
         if (itemId != null) {
@@ -73,8 +96,9 @@ class ItemEditViewModel(
 
     fun saveItem(onSuccess: () -> Unit) {
         val state = _uiState.value
+        val displayName = state.name.trim().replaceFirstChar { it.uppercase() }
 
-        if (state.name.trim().isEmpty()) {
+        if (displayName.isEmpty()) {
             _uiState.update { it.copy(error = "Digite um nome para o item") }
             return
         }
@@ -82,10 +106,18 @@ class ItemEditViewModel(
         _uiState.update { it.copy(isLoading = true, error = null) }
 
         viewModelScope.launch {
+            val normalized = normalizeName(displayName)
+            val duplicate = getItemsUseCase(tripId).first()
+                .any { it.id != itemId && normalizeName(it.name) == normalized }
+            if (duplicate) {
+                _uiState.update { it.copy(error = "Já existe um item com esse nome", isLoading = false) }
+                return@launch
+            }
+
             val item = TripItem(
                 id = itemId,
                 tripId = tripId,
-                name = state.name.trim(),
+                name = displayName,
                 category = state.category,
                 requiredForDeparture = if (state.category == ItemCategory.GIFT) false else state.requiredForDeparture,
                 requiredForReturn = if (state.category == ItemCategory.GIFT) false else state.requiredForReturn
@@ -109,5 +141,11 @@ class ItemEditViewModel(
                 onSuccess()
             }
         }
+    }
+
+    private fun normalizeName(name: String): String {
+        val noAccents = java.text.Normalizer.normalize(name.trim(), java.text.Normalizer.Form.NFD)
+            .replace("\\p{M}".toRegex(), "")
+        return noAccents.lowercase().replace("\\s+".toRegex(), " ")
     }
 }

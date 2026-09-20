@@ -34,4 +34,7 @@ interface TripItemDao {
 
     @Query("SELECT * FROM trip_items WHERE id = :itemId")
     fun getById(itemId: Long): Flow<TripItemEntity?>
+
+    @Query("SELECT DISTINCT name FROM trip_items WHERE name LIKE '%' || :escaped || '%' ESCAPE '\\' ORDER BY name ASC LIMIT 5")
+    fun suggestNames(escaped: String): Flow<List<String>>
 }

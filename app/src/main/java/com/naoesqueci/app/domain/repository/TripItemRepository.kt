@@ -10,4 +10,5 @@ interface TripItemRepository {
     suspend fun deleteItemsByTripId(tripId: Long)
     fun getItemsByTripId(tripId: Long): Flow<List<TripItem>>
     fun getItemById(itemId: Long): Flow<TripItem?>
+    fun suggestItemNames(prefix: String): Flow<List<String>>
 }

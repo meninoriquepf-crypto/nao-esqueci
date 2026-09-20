@@ -40,4 +40,11 @@ class TripItemRepositoryImpl(private val tripItemDao: TripItemDao) : TripItemRep
     override suspend fun deleteItemsByTripId(tripId: Long) = tripItemDao.deleteByTripId(tripId)
     override fun getItemsByTripId(tripId: Long): Flow<List<TripItem>> = tripItemDao.getByTripId(tripId).map { list -> list.map { it.toDomain() } }
     override fun getItemById(itemId: Long): Flow<TripItem?> = tripItemDao.getById(itemId).map { it?.toDomain() }
+    override fun suggestItemNames(prefix: String): Flow<List<String>> {
+        val escaped = prefix
+            .replace("\\", "\\\\")
+            .replace("%", "\\%")
+            .replace("_", "\\_")
+        return tripItemDao.suggestNames(escaped)
+    }
 }

@@ -26,6 +26,10 @@ class GetItemsUseCase(private val repository: TripItemRepository) {
     operator fun invoke(tripId: Long): Flow<List<TripItem>> = repository.getItemsByTripId(tripId)
 }
 
+class GetItemNameSuggestionsUseCase(private val repository: TripItemRepository) {
+    operator fun invoke(prefix: String): Flow<List<String>> = repository.suggestItemNames(prefix)
+}
+
 class GetItemsWithStateUseCase(
     private val itemRepository: TripItemRepository,
     private val checkStateRepository: CheckStateRepository

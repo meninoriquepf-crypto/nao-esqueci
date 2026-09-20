@@ -17,7 +17,10 @@ import androidx.compose.material.icons.filled.CardGiftcard
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,7 +31,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -48,6 +55,10 @@ fun ItemEditScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val suggestions by viewModel.suggestions.collectAsState()
+    var nameFieldFocused by remember { mutableStateOf(false) }
+    var suggestionsExpanded by remember { mutableStateOf(false) }
+    val showSuggestions = nameFieldFocused && suggestions.isNotEmpty()
 
     Scaffold(
         topBar = {
@@ -89,15 +100,45 @@ fun ItemEditScreen(
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            OutlinedTextField(
-                value = uiState.name,
-                onValueChange = { viewModel.setName(it) },
-                label = { Text(stringResource(R.string.item_name_hint)) },
-                placeholder = { Text(stringResource(R.string.item_name_hint)) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                isError = uiState.error != null
-            )
+            ExposedDropdownMenuBox(
+                expanded = showSuggestions && suggestionsExpanded,
+                onExpandedChange = { suggestionsExpanded = it }
+            ) {
+                OutlinedTextField(
+                    value = uiState.name,
+                    onValueChange = {
+                        viewModel.setName(it)
+                        suggestionsExpanded = true
+                    },
+                    label = { Text(stringResource(R.string.item_name_hint)) },
+                    placeholder = { Text(stringResource(R.string.item_name_hint)) },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
+                        .onFocusChanged { nameFieldFocused = it.isFocused },
+                    singleLine = true,
+                    isError = uiState.error != null,
+                    trailingIcon = {
+                        if (showSuggestions) {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = suggestionsExpanded)
+                        }
+                    }
+                )
+                ExposedDropdownMenu(
+                    expanded = showSuggestions && suggestionsExpanded,
+                    onDismissRequest = { suggestionsExpanded = false }
+                ) {
+                    suggestions.forEach { suggestion ->
+                        DropdownMenuItem(
+                            text = { Text(suggestion) },
+                            onClick = {
+                                viewModel.setName(suggestion)
+                                suggestionsExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
 
             uiState.error?.let { error ->
                 Text(

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Widget colors (light) — dark variants in values-night/widget_colors.xml -->
+    <color name="widget_background">#F5F5F5</color>
+    <color name="widget_title">#1D1D1D</color>
+    <color name="widget_subtitle">#494949</color>
+    <color name="widget_accent">#1B5E20</color>
+</resources>

@@ -52,15 +52,6 @@ O projeto ainda pode receber novas funcionalidades, melhorias, correções e mud
 
 As versões oficiais do aplicativo podem ser encontradas na seção **Releases** deste repositório.
 
-## ❤️ Por que este projeto existe?
-
-Porque uma ideia pequena também pode virar algo real.
-
-O Não Esqueci começou como uma ideia e acabou se tornando um aplicativo publicado, com código em um repositório público e uma primeira versão disponível.
-
-Este projeto é sobre aprender, criar, experimentar e transformar criatividade em algo que outras pessoas possam usar.
-
----
 
 🇧🇷 **Feito no Brasil, com criatividade, curiosidade e muitas ideias.**
 

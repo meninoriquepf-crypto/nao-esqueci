@@ -67,6 +67,12 @@
     <string name="settings_advance_1h">1 hora</string>
     <string name="settings_advance_2h">2 horas</string>
     <string name="settings_advance_disabled">Desativado</string>
+    <string name="settings_repeat">Repetir alerta</string>
+    <string name="settings_repeat_summary">Reavisar enquanto houver itens pendentes</string>
+    <string name="settings_repeat_off">Desligado</string>
+    <string name="settings_repeat_5min">5 min</string>
+    <string name="settings_repeat_10min">10 min</string>
+    <string name="settings_repeat_15min">15 min</string>
     <string name="settings_about">Sobre</string>
     <string name="settings_version">Versão 1.0.0</string>
     <string name="settings_privacy">Funciona 100% offline. Seus dados ficam no seu aparelho.</string>
@@ -93,6 +99,10 @@
     <string name="notification_positive_departure_body">Todos os itens obrigatórios foram conferidos.</string>
     <string name="notification_positive_return_title">Tudo certo para a volta!</string>
     <string name="notification_positive_return_body">Todos os itens obrigatórios foram conferidos.</string>
+
+    <string name="notification_final_departure_title">Hora da ida — itens pendentes!</string>
+    <string name="notification_final_return_title">Hora da volta — itens pendentes!</string>
+    <string name="notification_snooze">Adiar 10 min</string>
     
     <!-- Permission rationale -->
     <string name="permission_notification_title">Permissão para notificações</string>

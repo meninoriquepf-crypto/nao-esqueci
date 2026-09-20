@@ -19,6 +19,14 @@ class UpdateAdvanceTimeUseCase(private val repository: SettingsRepository) {
     suspend operator fun invoke(minutes: Int) = repository.setAdvanceMinutes(minutes)
 }
 
+class GetRepeatMinutesUseCase(private val repository: SettingsRepository) {
+    operator fun invoke(): Flow<Int> = repository.repeatMinutes
+}
+
+class UpdateRepeatMinutesUseCase(private val repository: SettingsRepository) {
+    suspend operator fun invoke(minutes: Int) = repository.setRepeatMinutes(minutes)
+}
+
 class GetThemeUseCase(private val repository: SettingsRepository) {
     operator fun invoke(): Flow<String> = repository.theme
 }

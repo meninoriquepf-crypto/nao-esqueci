@@ -16,6 +16,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 object SettingsKeys {
     val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notifications_enabled")
     val ADVANCE_MINUTES = intPreferencesKey("advance_minutes")
+    val REPEAT_MINUTES = intPreferencesKey("repeat_minutes")
     val THEME = stringPreferencesKey("theme")
 }
 
@@ -27,6 +28,9 @@ class SettingsDataStore(private val context: Context) {
     val advanceMinutes: Flow<Int> = context.dataStore.data
         .map { it[SettingsKeys.ADVANCE_MINUTES] ?: 30 }
 
+    val repeatMinutes: Flow<Int> = context.dataStore.data
+        .map { it[SettingsKeys.REPEAT_MINUTES] ?: 10 }
+
     val theme: Flow<String> = context.dataStore.data
         .map { it[SettingsKeys.THEME] ?: "system" }
 
@@ -36,6 +40,10 @@ class SettingsDataStore(private val context: Context) {
 
     suspend fun setAdvanceMinutes(minutes: Int) {
         context.dataStore.edit { it[SettingsKeys.ADVANCE_MINUTES] = minutes }
+    }
+
+    suspend fun setRepeatMinutes(minutes: Int) {
+        context.dataStore.edit { it[SettingsKeys.REPEAT_MINUTES] = minutes }
     }
 
     suspend fun setTheme(theme: String) {

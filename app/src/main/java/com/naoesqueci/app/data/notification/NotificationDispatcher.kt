@@ -67,8 +67,81 @@ class NotificationDispatcher(
         )
     }
 
-    fun sendPositiveConfirmation(trip: Trip, type: TripType) {
+    fun sendFinalAlert(trip: Trip, type: TripType, pendingItems: List<String>) {
+        val itemList = pendingItems.take(3).joinToString(", ") +
+            if (pendingItems.size > 3) " e mais ${pendingItems.size - 3}" else ""
+
         val titleRes = when (type) {
+            TripType.DEPARTURE -> R.string.notification_final_departure_title
+            TripType.RETURN -> R.string.notification_final_return_title
+        }
+        val bodyRes = when (type) {
+            TripType.DEPARTURE -> R.string.notification_pending_departure_body
+            TripType.RETURN -> R.string.notification_pending_return_body
+        }
+        val channelId = if (type == TripType.DEPARTURE) NotificationChannels.CHANNEL_DEPARTURE else NotificationChannels.CHANNEL_RETURN
+        val tripId = trip.id ?: return
+
+        val contentIntent = PendingIntent.getActivity(
+            context,
+            deepLinkRequestCode(tripId, type),
+            deepLinkIntent(tripId, type),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val fullScreenIntent = PendingIntent.getActivity(
+            context,
+            deepLinkRequestCode(tripId, type) + 1000,
+            deepLinkIntent(tripId, type),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val snoozeIntent = android.content.Intent(context, com.naoesqueci.app.alarm.AlarmReceiver::class.java).apply {
+            action = com.naoesqueci.app.alarm.AlarmConstants.generateAction(tripId, type.name, "SNOOZE")
+            putExtra(com.naoesqueci.app.alarm.AlarmConstants.EXTRA_TRIP_ID, tripId)
+            putExtra(com.naoesqueci.app.alarm.AlarmConstants.EXTRA_TRIP_TYPE, type.name)
+            putExtra(com.naoesqueci.app.alarm.AlarmConstants.EXTRA_EVENT_TYPE, "SNOOZE")
+            putExtra(com.naoesqueci.app.alarm.AlarmConstants.EXTRA_DEFERRED, true)
+        }
+        val snoozePendingIntent = PendingIntent.getBroadcast(
+            context,
+            com.naoesqueci.app.alarm.AlarmConstants.generateRequestCode(tripId, type.ordinal, 3),
+            snoozeIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val notification = androidx.core.app.NotificationCompat.Builder(context, channelId)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(context.getString(titleRes))
+            .setContentText(context.getString(bodyRes, itemList))
+            .setStyle(androidx.core.app.NotificationCompat.BigTextStyle().bigText(context.getString(bodyRes, itemList)))
+            .setPriority(android.app.Notification.PRIORITY_MAX)
+            .setCategory(androidx.core.app.NotificationCompat.CATEGORY_ALARM)
+            .setContentIntent(contentIntent)
+            .setFullScreenIntent(fullScreenIntent, true)
+            .addAction(0, context.getString(R.string.notification_snooze), snoozePendingIntent)
+            .setOngoing(true)
+            .setAutoCancel(false)
+            .build()
+
+        manager.notify(com.naoesqueci.app.alarm.AlarmConstants.finalNotificationId(tripId, type.ordinal), notification)
+    }
+
+    fun dismissFinalAlert(tripId: Long, type: TripType) {
+        manager.cancel(com.naoesqueci.app.alarm.AlarmConstants.finalNotificationId(tripId, type.ordinal))
+    }
+
+    private fun deepLinkIntent(tripId: Long, type: TripType): Intent {
+        return Intent(context, MainActivity::class.java).apply {
+            putExtra("DEEP_LINK_TRIP_ID", tripId)
+            putExtra("DEEP_LINK_TRIP_TYPE", type.name)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+    }
+
+    private fun deepLinkRequestCode(tripId: Long, type: TripType): Int {
+        return (tripId.toInt() shl 3) or (type.ordinal shl 2)
+    }
+
+    fun sendPositiveConfirmation(trip: Trip, type: TripType) {        val titleRes = when (type) {
             TripType.DEPARTURE -> R.string.notification_positive_departure_title
             TripType.RETURN -> R.string.notification_positive_return_title
         }

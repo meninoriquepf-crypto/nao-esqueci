@@ -26,9 +26,11 @@ import com.naoesqueci.app.domain.usecase.item.UpdateItemUseCase
 import com.naoesqueci.app.domain.usecase.notification.CancelTripNotificationsUseCase
 import com.naoesqueci.app.domain.usecase.notification.ScheduleTripNotificationsUseCase
 import com.naoesqueci.app.domain.usecase.settings.GetAdvanceTimeUseCase
+import com.naoesqueci.app.domain.usecase.settings.GetRepeatMinutesUseCase
 import com.naoesqueci.app.domain.usecase.settings.GetNotificationsEnabledUseCase
 import com.naoesqueci.app.domain.usecase.settings.GetThemeUseCase
 import com.naoesqueci.app.domain.usecase.settings.UpdateAdvanceTimeUseCase
+import com.naoesqueci.app.domain.usecase.settings.UpdateRepeatMinutesUseCase
 import com.naoesqueci.app.domain.usecase.settings.UpdateNotificationsEnabledUseCase
 import com.naoesqueci.app.domain.usecase.settings.UpdateThemeUseCase
 import com.naoesqueci.app.domain.usecase.trip.CreateTripUseCase
@@ -100,6 +102,8 @@ fun AppNavHost(
     val updateNotificationsEnabledUseCase = remember { UpdateNotificationsEnabledUseCase(settingsRepository) }
     val getAdvanceTimeUseCase = remember { GetAdvanceTimeUseCase(settingsRepository) }
     val updateAdvanceTimeUseCase = remember { UpdateAdvanceTimeUseCase(settingsRepository) }
+    val getRepeatMinutesUseCase = remember { GetRepeatMinutesUseCase(settingsRepository) }
+    val updateRepeatMinutesUseCase = remember { UpdateRepeatMinutesUseCase(settingsRepository) }
 
     val pendingDeepLinkTripId by deepLinkTripId.collectAsState()
     LaunchedEffect(pendingDeepLinkTripId) {
@@ -236,7 +240,9 @@ fun AppNavHost(
                     getNotificationsEnabledUseCase = getNotificationsEnabledUseCase,
                     updateNotificationsEnabledUseCase = updateNotificationsEnabledUseCase,
                     getAdvanceTimeUseCase = getAdvanceTimeUseCase,
-                    updateAdvanceTimeUseCase = updateAdvanceTimeUseCase
+                    updateAdvanceTimeUseCase = updateAdvanceTimeUseCase,
+                    getRepeatMinutesUseCase = getRepeatMinutesUseCase,
+                    updateRepeatMinutesUseCase = updateRepeatMinutesUseCase
                 )
             }
             SettingsScreen(

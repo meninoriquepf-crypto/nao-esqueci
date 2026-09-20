@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.naoesqueci.app.domain.usecase.settings.GetAdvanceTimeUseCase
 import com.naoesqueci.app.domain.usecase.settings.GetNotificationsEnabledUseCase
+import com.naoesqueci.app.domain.usecase.settings.GetRepeatMinutesUseCase
 import com.naoesqueci.app.domain.usecase.settings.GetThemeUseCase
 import com.naoesqueci.app.domain.usecase.settings.UpdateAdvanceTimeUseCase
 import com.naoesqueci.app.domain.usecase.settings.UpdateNotificationsEnabledUseCase
+import com.naoesqueci.app.domain.usecase.settings.UpdateRepeatMinutesUseCase
 import com.naoesqueci.app.domain.usecase.settings.UpdateThemeUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,13 +21,16 @@ class SettingsViewModel(
     getNotificationsEnabledUseCase: GetNotificationsEnabledUseCase,
     private val updateNotificationsEnabledUseCase: UpdateNotificationsEnabledUseCase,
     getAdvanceTimeUseCase: GetAdvanceTimeUseCase,
-    private val updateAdvanceTimeUseCase: UpdateAdvanceTimeUseCase
+    private val updateAdvanceTimeUseCase: UpdateAdvanceTimeUseCase,
+    getRepeatMinutesUseCase: GetRepeatMinutesUseCase,
+    private val updateRepeatMinutesUseCase: UpdateRepeatMinutesUseCase
 ) : ViewModel() {
 
     data class UiState(
         val selectedTheme: String = "system",
         val notificationsEnabled: Boolean = true,
-        val advanceMinutes: Int = 30
+        val advanceMinutes: Int = 30,
+        val repeatMinutes: Int = 10
     )
 
     private val _uiState = MutableStateFlow(UiState())
@@ -47,6 +52,11 @@ class SettingsViewModel(
                 _uiState.update { it.copy(advanceMinutes = minutes) }
             }
         }
+        viewModelScope.launch {
+            getRepeatMinutesUseCase().collect { minutes ->
+                _uiState.update { it.copy(repeatMinutes = minutes) }
+            }
+        }
     }
 
     fun setTheme(theme: String) {
@@ -62,5 +72,10 @@ class SettingsViewModel(
     fun setAdvanceMinutes(minutes: Int) {
         _uiState.update { it.copy(advanceMinutes = minutes) }
         viewModelScope.launch { updateAdvanceTimeUseCase(minutes) }
+    }
+
+    fun setRepeatMinutes(minutes: Int) {
+        _uiState.update { it.copy(repeatMinutes = minutes) }
+        viewModelScope.launch { updateRepeatMinutesUseCase(minutes) }
     }
 }

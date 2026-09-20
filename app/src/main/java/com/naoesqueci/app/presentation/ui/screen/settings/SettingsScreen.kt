@@ -162,6 +162,39 @@ fun SettingsScreen(
                         )
                     }
                 }
+
+                Spacer(Modifier.height(16.dp))
+
+                Text(
+                    text = stringResource(R.string.settings_repeat),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = stringResource(R.string.settings_repeat_summary),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    val repeatOptions = listOf(
+                        0 to stringResource(R.string.settings_repeat_off),
+                        5 to stringResource(R.string.settings_repeat_5min),
+                        10 to stringResource(R.string.settings_repeat_10min),
+                        15 to stringResource(R.string.settings_repeat_15min)
+                    )
+
+                    repeatOptions.forEach { (minutes, label) ->
+                        FilterChip(
+                            selected = uiState.repeatMinutes == minutes,
+                            onClick = { viewModel.setRepeatMinutes(minutes) },
+                            label = { Text(label) },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
             }
 
             HorizontalDivider()

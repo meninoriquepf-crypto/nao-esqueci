@@ -21,12 +21,13 @@ class AlarmScheduler(
         if (!notificationsEnabled) return
 
         val advanceMinutes = settingsRepository.advanceMinutes.first()
+        val repeatMinutes = settingsRepository.repeatMinutes.first()
 
-        scheduleForType(trip, TripType.DEPARTURE, advanceMinutes)
-        scheduleForType(trip, TripType.RETURN, advanceMinutes)
+        scheduleForType(trip, TripType.DEPARTURE, advanceMinutes, repeatMinutes)
+        scheduleForType(trip, TripType.RETURN, advanceMinutes, repeatMinutes)
     }
 
-    private fun scheduleForType(trip: Trip, type: TripType, advanceMinutes: Int) {
+    private fun scheduleForType(trip: Trip, type: TripType, advanceMinutes: Int, repeatMinutes: Int) {
         val dateTime = when (type) {
             TripType.DEPARTURE -> trip.departureDateTime
             TripType.RETURN -> trip.returnDateTime
@@ -46,12 +47,38 @@ class AlarmScheduler(
             }
         }
 
+        if (repeatMinutes > 0) {
+            val base = if (advanceMinutes > 0) {
+                dateTime - (advanceMinutes * 60 * 1000)
+            } else {
+                dateTime - (repeatMinutes * 60 * 1000)
+            }
+            val firstRepeat = base + (repeatMinutes * 60 * 1000)
+            val now = System.currentTimeMillis()
+            if (firstRepeat > now && firstRepeat < dateTime) {
+                scheduleAlarm(
+                    tripId = trip.id ?: return,
+                    tripType = type,
+                    eventType = "REPEAT_WARNING",
+                    triggerTime = firstRepeat
+                )
+            }
+        }
+
         scheduleAlarm(
             tripId = trip.id ?: return,
             tripType = type,
             eventType = "AT_TIME",
             triggerTime = dateTime
         )
+    }
+
+    fun scheduleRepeatAlarm(tripId: Long, tripType: TripType, triggerTime: Long) {
+        scheduleAlarm(tripId, tripType, "REPEAT_WARNING", triggerTime)
+    }
+
+    fun scheduleSnoozeAlarm(tripId: Long, tripType: TripType, triggerTime: Long) {
+        scheduleAlarm(tripId, tripType, "SNOOZE", triggerTime)
     }
 
     private fun scheduleAlarm(tripId: Long, tripType: TripType, eventType: String, triggerTime: Long) {
@@ -91,8 +118,12 @@ class AlarmScheduler(
 
     fun cancelAlarmsForTripId(tripId: Long) {
         cancelAlarm(tripId, TripType.DEPARTURE, "ADVANCE_WARNING")
+        cancelAlarm(tripId, TripType.DEPARTURE, "REPEAT_WARNING")
+        cancelAlarm(tripId, TripType.DEPARTURE, "SNOOZE")
         cancelAlarm(tripId, TripType.DEPARTURE, "AT_TIME")
         cancelAlarm(tripId, TripType.RETURN, "ADVANCE_WARNING")
+        cancelAlarm(tripId, TripType.RETURN, "REPEAT_WARNING")
+        cancelAlarm(tripId, TripType.RETURN, "SNOOZE")
         cancelAlarm(tripId, TripType.RETURN, "AT_TIME")
     }
 
@@ -113,6 +144,8 @@ class AlarmScheduler(
     private fun getEventTypeOrdinal(eventType: String): Int = when (eventType) {
         "ADVANCE_WARNING" -> 0
         "AT_TIME" -> 1
+        "REPEAT_WARNING" -> 2
+        "SNOOZE" -> 3
         else -> 0
     }
 

@@ -28,6 +28,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val tripId = intent.getLongExtra(AlarmConstants.EXTRA_TRIP_ID, -1)
         val tripTypeStr = intent.getStringExtra(AlarmConstants.EXTRA_TRIP_TYPE) ?: return
         val eventType = intent.getStringExtra(AlarmConstants.EXTRA_EVENT_TYPE) ?: return
+        val deferred = intent.getBooleanExtra(AlarmConstants.EXTRA_DEFERRED, false)
 
         if (tripId == -1L) return
 
@@ -35,11 +36,27 @@ class AlarmReceiver : BroadcastReceiver() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                handleAlarm(context.applicationContext, tripId, tripTypeStr, eventType)
+                if (eventType == "SNOOZE" && deferred) {
+                    handleSnoozeTap(context.applicationContext, tripId, tripTypeStr)
+                } else {
+                    handleAlarm(context.applicationContext, tripId, tripTypeStr, eventType)
+                }
             } finally {
                 pendingResult.finish()
             }
         }
+    }
+
+    private suspend fun handleSnoozeTap(context: Context, tripId: Long, tripTypeStr: String) {
+        val tripType = try { TripType.valueOf(tripTypeStr) } catch (e: Exception) { TripType.DEPARTURE }
+        val settingsRepository = SettingsRepositoryImpl(SettingsDataStore(context))
+        AlarmScheduler(context, settingsRepository).scheduleSnoozeAlarm(
+            tripId,
+            tripType,
+            System.currentTimeMillis() + (AlarmConstants.SNOOZE_MINUTES * 60 * 1000)
+        )
+        val eventRepository = NotificationEventRepositoryImpl(AppDatabase.getDatabase(context).notificationEventDao())
+        NotificationDispatcher(context, eventRepository, settingsRepository).dismissFinalAlert(tripId, tripType)
     }
 
     private suspend fun handleAlarm(context: Context, tripId: Long, tripTypeStr: String, eventType: String) {
@@ -71,9 +88,25 @@ class AlarmReceiver : BroadcastReceiver() {
 
         val eventRepository = NotificationEventRepositoryImpl(db.notificationEventDao())
         val dispatcher = NotificationDispatcher(context, eventRepository, settingsRepository)
+        val scheduler = AlarmScheduler(context, settingsRepository)
 
         if (pending.isNotEmpty()) {
-            dispatcher.sendPendingItemsAlert(trip, tripType, pending.map { it.name })
+            if (eventType == "AT_TIME") {
+                dispatcher.sendFinalAlert(trip, tripType, pending.map { it.name })
+            } else {
+                dispatcher.sendPendingItemsAlert(trip, tripType, pending.map { it.name })
+            }
+            if (eventType == "REPEAT_WARNING") {
+                val repeatMinutes = settingsRepository.repeatMinutes.first()
+                val tripTime = when (tripType) {
+                    TripType.DEPARTURE -> trip.departureDateTime
+                    TripType.RETURN -> trip.returnDateTime
+                }
+                val next = System.currentTimeMillis() + (repeatMinutes * 60 * 1000)
+                if (repeatMinutes > 0 && next < tripTime) {
+                    scheduler.scheduleRepeatAlarm(tripId, tripType, next)
+                }
+            }
             return
         }
 

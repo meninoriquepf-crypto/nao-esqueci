@@ -1,5 +1,6 @@
 package com.naoesqueci.app
 
+import android.app.NotificationManager
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,6 +14,8 @@ import com.naoesqueci.app.data.local.preferences.SettingsDataStore
 import com.naoesqueci.app.data.local.repository.SettingsRepositoryImpl
 import com.naoesqueci.app.domain.usecase.settings.GetThemeUseCase
 import com.naoesqueci.app.domain.usecase.settings.UpdateThemeUseCase
+import com.naoesqueci.app.alarm.AlarmConstants
+import com.naoesqueci.app.domain.model.TripType
 import com.naoesqueci.app.presentation.navigation.AppNavHost
 import com.naoesqueci.app.presentation.ui.theme.DynamicTheme
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,5 +65,10 @@ class MainActivity : ComponentActivity() {
     private fun handleDeepLink(intent: Intent) {
         val tripId = intent.getLongExtra("DEEP_LINK_TRIP_ID", -1)
         _deepLinkTripId.value = if (tripId == -1L) null else tripId
+        if (tripId != -1L) {
+            val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            manager.cancel(AlarmConstants.finalNotificationId(tripId, TripType.DEPARTURE.ordinal))
+            manager.cancel(AlarmConstants.finalNotificationId(tripId, TripType.RETURN.ordinal))
+        }
     }
 }

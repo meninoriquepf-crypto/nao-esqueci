@@ -1,59 +1,64 @@
-# 🧳 Não Esqueci
+# 🧳 Fortrip
 
-> Um aplicativo criado para ajudar você a organizar suas viagens e não esquecer o que realmente importa.
+> **Sua viagem organizada. Sua mente tranquila.**
+>
+> Um aplicativo criado para ajudar você a organizar suas viagens, preparar suas malas e lembrar do que realmente importa.
 
 ## 📱 Sobre o projeto
 
-**Não Esqueci** é um aplicativo Android criado para ajudar pessoas a organizarem suas viagens, listas e itens importantes de forma simples e prática.
+**Fortrip** é um aplicativo Android desenvolvido para tornar a preparação de viagens mais simples, prática e organizada.
 
-A ideia nasceu da vontade de criar algo que pudesse ser realmente útil no dia a dia. O projeto foi desenvolvido utilizando o **Muse Spark 1.3 Free**, a partir das ideias, criatividade e experimentação do seu criador.
+Com listas personalizadas, acompanhamento de itens e organização de datas, o objetivo é ajudar você a se preparar para cada viagem sem deixar para trás aquilo de que precisa.
 
-## 🇧🇷 Uma ideia feita por um brasileiro
+Mais do que uma lista de bagagem, o Fortrip é um projeto que nasceu de uma ideia simples: usar a tecnologia para resolver problemas reais do cotidiano.
 
-Este projeto foi idealizado e desenvolvido por um **brasileiro**, que decidiu transformar suas próprias ideias em um aplicativo de verdade.
+## 🇧🇷 Feito por um brasileiro
 
-O Não Esqueci representa uma experiência de aprendizado, criatividade e vontade de construir algo próprio. Cada parte do projeto surgiu da tentativa de transformar uma ideia em algo que outras pessoas também pudessem usar.
+O Fortrip nasceu da criatividade, da curiosidade e da vontade de transformar uma ideia em um produto de verdade.
 
-## 💭 De onde veio essa ideia?
+Seu desenvolvimento contou com o auxílio do **Muse Spark 1.3 Free**, utilizado como ferramenta durante o processo de criação e experimentação.
 
-Desde cedo, sempre existiu o sonho de criar aplicativos e, um dia, poder **vender os próprios apps e ganhar dinheiro com eles**.
+Este projeto representa o começo de uma jornada de aprendizado, desenvolvimento e empreendedorismo: criar aplicativos próprios, aprimorá-los e, no futuro, transformá-los em produtos que as pessoas queiram usar.
 
-Mas existe algo ainda mais importante por trás desse sonho:
+## ✨ Funcionalidades
 
-**criar coisas que possam ajudar outras pessoas.**
-
-O objetivo não é apenas ganhar dinheiro. É aprender a criar produtos próprios, transformar criatividade em projetos reais e, principalmente, desenvolver ferramentas que possam ser úteis para alguém.
-
-O **Não Esqueci** é um dos primeiros passos nessa jornada. 🚀
-
-## ✨ O que o aplicativo faz?
-
-* 🧳 Organização de viagens
-* 📋 Listas de itens
-* ☑️ Marcação dos itens já preparados
-* 📅 Organização de datas e horários
-* 🔔 Alertas para itens pendentes
-* 🎉 Indicação de conclusão da lista
-* 🌙 Interface simples e moderna
+* 🧳 **Organização de viagens:** prepare-se para cada destino.
+* 📋 **Listas de itens:** organize tudo o que precisa levar.
+* ☑️ **Acompanhamento de preparação:** marque os itens conforme os prepara.
+* 📅 **Organização de datas e horários:** acompanhe as informações importantes da viagem.
+* 🔔 **Alertas de pendências:** receba avisos para ajudar a lembrar dos itens que faltam.
+* 🎉 **Indicador de conclusão:** acompanhe o progresso da sua lista.
+* 🌙 **Interface simples e moderna:** uma experiência pensada para facilitar o uso.
 
 ## 🛠️ Desenvolvimento
 
-**Ferramenta principal:** Muse Spark 1.3 Free
+* **Plataforma:** Android
+* **Ferramenta de desenvolvimento assistido:** Muse Spark 1.3 Free
+* **Versão atual:** 1.0.0
 
-O aplicativo foi criado utilizando a versão gratuita do **Muse Spark 1.3**, com o projeto sendo desenvolvido e aprimorado a partir das ideias e criatividade do seu criador.
+O Fortrip foi desenvolvido a partir das ideias e da experimentação de seu criador, com auxílio de ferramentas de inteligência artificial.
 
-## 🚧 Status
+## 🚧 Status do projeto
 
-**Versão atual: 1.0.0**
+O Fortrip está em desenvolvimento contínuo. Novas funcionalidades, melhorias de usabilidade e correções poderão ser incorporadas conforme o projeto evoluir.
 
-O projeto ainda pode receber novas funcionalidades, melhorias, correções e mudanças no futuro.
+## 📦 Downloads
 
-## 📦 Releases
+As versões oficiais do aplicativo estarão disponíveis na seção [Releases](../../releases) deste repositório.
 
-As versões oficiais do aplicativo podem ser encontradas na seção **Releases** deste repositório.
+Consulte as notas de cada versão para acompanhar as novidades e alterações.
 
+## 💭 A ideia por trás do Fortrip
 
-🇧🇷 **Feito no Brasil, com criatividade, curiosidade e muitas ideias.**
+Criar aplicativos sempre foi um sonho. O Fortrip é uma oportunidade de transformar esse sonho em algo concreto: um produto próprio, com identidade, propósito e potencial para crescer.
 
-🧳 **Não Esqueci**
-*Para lembrar antes de sair, e não depois de chegar.*
+A ambição é construir ferramentas úteis, aprender com cada etapa do desenvolvimento e, no futuro, criar um negócio sustentável a partir dos próprios produtos.
+
+Porque uma boa ideia não precisa ficar só no papel.
+
+---
+
+🇧🇷 **Feito no Brasil, com criatividade, curiosidade e vontade de construir.**
+
+**Fortrip**
+*Para lembrar antes de sair, e não depois de chegar.* 🧳
